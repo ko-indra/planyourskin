@@ -260,6 +260,65 @@ export async function customerLogout(accessToken: string): Promise<{ ok: boolean
   return { ok: !!data.customerAccessTokenDelete.deletedAccessToken };
 }
 
+// ── Customer Orders ────────────────────────────────────────────────────
+export type CustomerOrder = {
+  id: string;
+  orderNumber: number;
+  name: string;
+  processedAt: string;
+  financialStatus: string | null;
+  fulfillmentStatus: string | null;
+  statusUrl: string | null;
+  totalPrice: Money;
+  lineItems: {
+    edges: Array<{
+      node: {
+        title: string;
+        quantity: number;
+        variant: { image: { url: string; altText: string | null } | null } | null;
+      };
+    }>;
+  };
+};
+
+export async function fetchCustomerOrders(accessToken: string, first = 20): Promise<CustomerOrder[]> {
+  const Q = /* GraphQL */ `
+    query CustomerOrders($t: String!, $first: Int!) {
+      customer(customerAccessToken: $t) {
+        orders(first: $first, sortKey: PROCESSED_AT, reverse: true) {
+          edges {
+            node {
+              id
+              orderNumber
+              name
+              processedAt
+              financialStatus
+              fulfillmentStatus
+              statusUrl
+              totalPrice { amount currencyCode }
+              lineItems(first: 50) {
+                edges {
+                  node {
+                    title
+                    quantity
+                    variant {
+                      image { url altText }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+  const data = await shopifyFetch<{
+    customer: { orders: { edges: Array<{ node: CustomerOrder }> } } | null;
+  }>(Q, { t: accessToken, first }, false);
+  return data.customer?.orders.edges.map((e) => e.node) ?? [];
+}
+
 export async function fetchCustomer(accessToken: string): Promise<CustomerData | null> {
   const Q = /* GraphQL */ `
     query Customer($t: String!) {
