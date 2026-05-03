@@ -1,6 +1,11 @@
 // Server-only Midtrans Snap client.
-const SERVER_KEY = process.env.MIDTRANS_SERVER_KEY ?? "";
 const IS_PRODUCTION = process.env.MIDTRANS_IS_PRODUCTION === "true";
+
+// Pick keys matching the active environment. Falls back to legacy MIDTRANS_SERVER_KEY
+// for backwards compat with older .env layouts.
+const SERVER_KEY = IS_PRODUCTION
+  ? process.env.MIDTRANS_PROD_SERVER_KEY ?? process.env.MIDTRANS_SERVER_KEY ?? ""
+  : process.env.MIDTRANS_SANDBOX_SERVER_KEY ?? process.env.MIDTRANS_SERVER_KEY ?? "";
 
 const SNAP_BASE = IS_PRODUCTION
   ? "https://app.midtrans.com/snap/v1"
