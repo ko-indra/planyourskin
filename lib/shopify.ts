@@ -351,6 +351,127 @@ export async function fetchCustomerOrders(accessToken: string, first = 20): Prom
   return data.customer?.orders.edges.map((e) => e.node) ?? [];
 }
 
+// ── Customer Order Detail ──────────────────────────────────────────────
+export type ShippingAddress = {
+  firstName: string | null;
+  lastName: string | null;
+  company: string | null;
+  address1: string | null;
+  address2: string | null;
+  city: string | null;
+  province: string | null;
+  zip: string | null;
+  country: string | null;
+  phone: string | null;
+};
+
+export type FulfillmentTrackingInfo = { number: string | null; url: string | null };
+
+export type SuccessfulFulfillment = {
+  trackingCompany: string | null;
+  trackingInfo: FulfillmentTrackingInfo[];
+};
+
+export type OrderLineItemDetail = {
+  title: string;
+  quantity: number;
+  originalTotalPrice: Money;
+  discountedTotalPrice: Money;
+  variant: {
+    id: string;
+    title: string;
+    sku: string | null;
+    image: Image | null;
+    price: Money;
+    product: { handle: string } | null;
+  } | null;
+};
+
+export type CustomerOrderDetail = {
+  id: string;
+  orderNumber: number;
+  name: string;
+  processedAt: string;
+  financialStatus: string | null;
+  fulfillmentStatus: string | null;
+  statusUrl: string | null;
+  email: string | null;
+  phone: string | null;
+  currentSubtotalPrice: Money | null;
+  currentTotalShippingPrice: Money | null;
+  currentTotalTax: Money | null;
+  currentTotalPrice: Money | null;
+  totalPrice: Money;
+  shippingAddress: ShippingAddress | null;
+  successfulFulfillments: SuccessfulFulfillment[] | null;
+  lineItems: { edges: Array<{ node: OrderLineItemDetail }> };
+};
+
+export async function fetchCustomerOrder(
+  accessToken: string,
+  orderNumber: number
+): Promise<CustomerOrderDetail | null> {
+  const Q = /* GraphQL */ `
+    query CustomerOrder($t: String!, $query: String!) {
+      customer(customerAccessToken: $t) {
+        orders(first: 1, query: $query) {
+          edges {
+            node {
+              id
+              orderNumber
+              name
+              processedAt
+              financialStatus
+              fulfillmentStatus
+              statusUrl
+              email
+              phone
+              currentSubtotalPrice { amount currencyCode }
+              currentTotalShippingPrice { amount currencyCode }
+              currentTotalTax { amount currencyCode }
+              currentTotalPrice { amount currencyCode }
+              totalPrice { amount currencyCode }
+              shippingAddress {
+                firstName lastName company
+                address1 address2
+                city province zip country phone
+              }
+              successfulFulfillments(first: 10) {
+                trackingCompany
+                trackingInfo { number url }
+              }
+              lineItems(first: 50) {
+                edges {
+                  node {
+                    title
+                    quantity
+                    originalTotalPrice { amount currencyCode }
+                    discountedTotalPrice { amount currencyCode }
+                    variant {
+                      id
+                      title
+                      sku
+                      image { url altText width height }
+                      price { amount currencyCode }
+                      product { handle }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+  const data = await shopifyFetch<{
+    customer: { orders: { edges: Array<{ node: CustomerOrderDetail }> } } | null;
+  }>(Q, { t: accessToken, query: `name:"#${orderNumber}"` }, false);
+  const node = data.customer?.orders.edges[0]?.node ?? null;
+  if (!node || node.orderNumber !== orderNumber) return null;
+  return node;
+}
+
 export async function fetchCustomer(accessToken: string): Promise<CustomerData | null> {
   const Q = /* GraphQL */ `
     query Customer($t: String!) {

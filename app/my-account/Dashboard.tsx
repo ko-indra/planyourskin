@@ -6,6 +6,7 @@ import { useAccount } from "@/lib/account-store";
 import { useCart, type CartLine } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { formatMoney, type CustomerOrder, type ProductWithFirstVariant } from "@/lib/shopify";
+import { fmtDate, fmtIDR, statusLabel } from "./_lib/status";
 
 const WEIGHT_TO_GRAMS = {
   GRAMS: 1,
@@ -13,38 +14,6 @@ const WEIGHT_TO_GRAMS = {
   OUNCES: 28.3495,
   POUNDS: 453.592,
 } as const;
-
-const fmtIDR = (n: number) =>
-  new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(n);
-
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("id-ID", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
-function statusLabel(s: string | null): { text: string; cls: string } {
-  if (!s) return { text: "—", cls: "bg-neutral-100 text-neutral-600" };
-  const upper = s.toUpperCase();
-  if (["PAID", "FULFILLED"].includes(upper)) {
-    return { text: upper, cls: "bg-green-50 text-green-700 ring-1 ring-green-200" };
-  }
-  if (["PENDING", "AUTHORIZED", "PARTIALLY_PAID"].includes(upper)) {
-    return { text: upper, cls: "bg-amber-50 text-amber-700 ring-1 ring-amber-200" };
-  }
-  if (["UNFULFILLED", "PARTIALLY_FULFILLED"].includes(upper)) {
-    return { text: upper.replace("_", " "), cls: "bg-neutral-100 text-neutral-700 ring-1 ring-neutral-200" };
-  }
-  if (["REFUNDED", "VOIDED"].includes(upper)) {
-    return { text: upper, cls: "bg-red-50 text-red-700 ring-1 ring-red-200" };
-  }
-  return { text: upper.replace(/_/g, " "), cls: "bg-neutral-100 text-neutral-700" };
-}
 
 export default function MyAccountDashboard() {
   const { customer, accessToken, clearAuth, open, isLoggedIn } = useAccount();
@@ -360,16 +329,12 @@ function OrderCard({ order }: { order: CustomerOrder }) {
         <p className="text-[14px] text-[#222529]">
           Total: <span className="font-semibold">{fmtIDR(total)}</span>
         </p>
-        {order.statusUrl && (
-          <a
-            href={order.statusUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[12px] font-semibold uppercase tracking-[0.1em] text-brand hover:underline"
-          >
-            View Detail →
-          </a>
-        )}
+        <Link
+          href={`/my-account/orders/${order.orderNumber}`}
+          className="text-[12px] font-semibold uppercase tracking-[0.1em] text-brand hover:underline"
+        >
+          View Detail →
+        </Link>
       </div>
     </li>
   );
