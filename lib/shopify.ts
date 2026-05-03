@@ -43,6 +43,8 @@ export type ProductSummary = {
   id: string;
   handle: string;
   title: string;
+  vendor: string;
+  productType: string;
   featuredImage: Image | null;
   previewImages: { edges: Array<{ node: Image }> };
   tags: string[];
@@ -60,8 +62,10 @@ export type ProductDetail = ProductSummary & {
       node: {
         id: string;
         title: string;
+        sku: string | null;
         availableForSale: boolean;
         price: Money;
+        compareAtPrice: Money | null;
         weight: number; // in unit below
         weightUnit: "GRAMS" | "KILOGRAMS" | "OUNCES" | "POUNDS";
         selectedOptions: Array<{ name: string; value: string }>;
@@ -77,6 +81,8 @@ const PRODUCT_FIELDS = /* GraphQL */ `
     id
     handle
     title
+    vendor
+    productType
     featuredImage { url altText width height }
     previewImages: images(first: 2) { edges { node { url altText width height } } }
     tags
@@ -117,8 +123,10 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
             node {
               id
               title
+              sku
               availableForSale
               price { amount currencyCode }
+              compareAtPrice { amount currencyCode }
               weight
               weightUnit
               selectedOptions { name value }
