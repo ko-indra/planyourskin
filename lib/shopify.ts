@@ -140,18 +140,50 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
   return data.product;
 }
 
-export async function getProductsByIds(ids: string[]): Promise<ProductSummary[]> {
+export type ProductFirstVariant = {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  price: Money;
+  weight: number;
+  weightUnit: "GRAMS" | "KILOGRAMS" | "OUNCES" | "POUNDS";
+};
+
+export type ProductWithFirstVariant = ProductSummary & {
+  firstVariant: ProductFirstVariant | null;
+};
+
+export async function getProductsByIds(ids: string[]): Promise<ProductWithFirstVariant[]> {
   if (ids.length === 0) return [];
   const query = /* GraphQL */ `
     ${PRODUCT_FIELDS}
     query Nodes($ids: [ID!]!) {
       nodes(ids: $ids) {
-        ... on Product { ...ProductFields }
+        ... on Product {
+          ...ProductFields
+          variants(first: 1) {
+            edges {
+              node {
+                id
+                title
+                availableForSale
+                price { amount currencyCode }
+                weight
+                weightUnit
+              }
+            }
+          }
+        }
       }
     }
   `;
-  const data = await shopifyFetch<{ nodes: Array<ProductSummary | null> }>(query, { ids }, false);
-  return data.nodes.filter((n): n is ProductSummary => n !== null);
+  type Node = ProductSummary & {
+    variants: { edges: Array<{ node: ProductFirstVariant }> };
+  };
+  const data = await shopifyFetch<{ nodes: Array<Node | null> }>(query, { ids }, false);
+  return data.nodes
+    .filter((n): n is Node => n !== null)
+    .map((n) => ({ ...n, firstVariant: n.variants.edges[0]?.node ?? null }));
 }
 
 export async function getCollectionProducts(handle: string, first = 24): Promise<ProductSummary[]> {
