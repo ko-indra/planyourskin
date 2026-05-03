@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount } from "@/lib/account-store";
-import type { CustomerOrder } from "@/lib/shopify";
+import { formatMoney, type CustomerOrder, type ProductSummary } from "@/lib/shopify";
 
 const fmtIDR = (n: number) =>
   new Intl.NumberFormat("id-ID", {
@@ -40,6 +41,7 @@ export default function MyAccountDashboard() {
   const { customer, accessToken, clearAuth, open, isLoggedIn } = useAccount();
   const [mounted, setMounted] = useState(false);
   const [orders, setOrders] = useState<CustomerOrder[] | null>(null);
+  const [wishlist, setWishlist] = useState<ProductSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => setMounted(true), []);
@@ -56,6 +58,16 @@ export default function MyAccountDashboard() {
       })
       .then((d: { orders: CustomerOrder[] }) => setOrders(d.orders))
       .catch((e: Error) => setError(e.message));
+
+    fetch("/api/wishlist/products", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then(async (r) => {
+        if (!r.ok) throw new Error((await r.json()).error || `HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((d: { products: ProductSummary[] }) => setWishlist(d.products ?? []))
+      .catch(() => setWishlist([]));
   }, [mounted, accessToken, isLoggedIn]);
 
   if (!mounted) return <div className="text-center text-[#777]">Loading…</div>;
@@ -140,11 +152,75 @@ export default function MyAccountDashboard() {
       </section>
 
       <section className="mt-10">
-        <h2 className="mb-4 text-[18px] font-semibold text-[#222529]">Address Book</h2>
-        <div className="rounded-lg border border-neutral-200 p-6">
-          <p className="text-[13px] text-[#777]">Kelola alamat pengiriman.</p>
-          <p className="mt-2 text-[12px] italic text-[#aaa]">Coming soon</p>
+        <div className="mb-4 flex items-baseline justify-between">
+          <h2 className="text-[18px] font-semibold text-[#222529]">Wishlist</h2>
+          {wishlist && wishlist.length > 0 && (
+            <span className="text-[13px] text-[#777]">{wishlist.length} produk</span>
+          )}
         </div>
+
+        {wishlist === null && (
+          <div className="rounded-lg border border-neutral-200 p-8 text-center text-[#777]">
+            Memuat wishlist…
+          </div>
+        )}
+
+        {wishlist && wishlist.length === 0 && (
+          <div className="rounded-lg border border-neutral-200 p-12 text-center">
+            <p className="text-[15px] text-[#777]">Belum ada produk di wishlist.</p>
+            <Link
+              href="/shop"
+              className="mt-4 inline-block rounded bg-[#222529] px-8 py-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-white hover:bg-[#3a3e44]"
+            >
+              Jelajahi Produk
+            </Link>
+          </div>
+        )}
+
+        {wishlist && wishlist.length > 0 && (
+          <div className="overflow-hidden rounded-lg border border-neutral-200">
+            <ul className="divide-y divide-neutral-100">
+              {wishlist.slice(0, 5).map((p) => (
+                <li key={p.id} className="flex items-center gap-4 px-5 py-3">
+                  <Link
+                    href={`/product/${p.handle}`}
+                    className="relative h-12 w-12 shrink-0 overflow-hidden rounded bg-neutral-100"
+                  >
+                    {p.featuredImage?.url && (
+                      <Image
+                        src={p.featuredImage.url}
+                        alt={p.featuredImage.altText ?? p.title}
+                        fill
+                        sizes="48px"
+                        className="object-cover"
+                      />
+                    )}
+                  </Link>
+                  <Link
+                    href={`/product/${p.handle}`}
+                    className="flex-1 text-[14px] text-[#222529] hover:text-brand"
+                  >
+                    {p.title}
+                  </Link>
+                  <p className="text-[13px] text-[#777]">
+                    {formatMoney(p.priceRange.minVariantPrice)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+            <div className="flex items-center justify-between border-t border-neutral-200 px-5 py-3">
+              <span className="text-[12px] text-[#777]">
+                {wishlist.length > 5 ? `+${wishlist.length - 5} lagi` : ""}
+              </span>
+              <Link
+                href="/wishlist"
+                className="text-[12px] font-semibold uppercase tracking-[0.1em] text-brand hover:underline"
+              >
+                View Wishlist →
+              </Link>
+            </div>
+          </div>
+        )}
       </section>
 
       <button
