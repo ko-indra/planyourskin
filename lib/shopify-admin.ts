@@ -75,6 +75,7 @@ export type DraftOrderAddress = {
 export type CreateDraftOrderInput = {
   email: string;
   phone: string;
+  customerId?: string; // gid://shopify/Customer/... — links order to logged-in customer
   lineItems: DraftOrderLineItem[];
   shippingAddress: DraftOrderAddress;
   shippingTitle: string; // e.g. "JNE REG"
@@ -131,6 +132,7 @@ export async function createDraftOrder(
     input: {
       email: input.email,
       phone: e164Phone,
+      ...(input.customerId ? { purchasingEntity: { customerId: input.customerId } } : {}),
       lineItems,
       shippingAddress: {
         firstName: input.shippingAddress.firstName,

@@ -9,6 +9,7 @@ type ChargeBody = {
   shipping: number;
   shippingTitle: string; // e.g. "JNE REG"
   customer: SnapCustomer;
+  customerId?: string; // gid://shopify/Customer/... when user is logged in
   shippingAddress: DraftOrderAddress;
 };
 
@@ -42,6 +43,7 @@ export async function POST(req: Request) {
     const draft = await createDraftOrder({
       email: customer.email ?? "",
       phone: customer.phone ?? "",
+      customerId: body?.customerId,
       lineItems: items.map((it) => ({ variantId: it.variantId, quantity: it.quantity })),
       shippingAddress,
       shippingTitle,

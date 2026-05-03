@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useCart } from "@/lib/cart-store";
+import { useAccount } from "@/lib/account-store";
 import type { Province, City, District, CostItem } from "@/lib/rajaongkir";
 
 const SERVICE_FEE = 2500;
@@ -52,6 +53,8 @@ function Chevron() {
 
 export default function CheckoutPage() {
   const { lines, setQty, remove, subtotal, totalWeightGrams } = useCart();
+  const accountCustomer = useAccount((s) => s.customer);
+  const accountIsLoggedIn = useAccount((s) => s.isLoggedIn);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -147,6 +150,9 @@ export default function CheckoutPage() {
 
       const shippingTitle = `${selectedShipping.code.toUpperCase()} ${selectedShipping.service}`;
 
+      const customerId =
+        accountIsLoggedIn() && accountCustomer ? accountCustomer.id : undefined;
+
       const res = await fetch("/api/midtrans/charge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -166,6 +172,7 @@ export default function CheckoutPage() {
             email: values.email,
             phone: values.phone,
           },
+          customerId,
           shippingAddress: {
             firstName,
             lastName,
