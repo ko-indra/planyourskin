@@ -38,12 +38,11 @@ export default function CartIcon() {
 
   return (
     <div className="relative" onMouseEnter={showOpen} onMouseLeave={scheduleClose}>
-      <button
-        type="button"
+      <Link
+        href="/cart"
         aria-label="Cart"
         aria-expanded={open}
-        onClick={(e) => e.preventDefault()}
-        className="relative inline-flex cursor-default items-center hover:text-brand"
+        className="relative inline-flex items-center hover:text-brand"
       >
         <svg
           width="22"
@@ -62,7 +61,7 @@ export default function CartIcon() {
         <span className="ml-1 text-[11px] font-medium tabular-nums">
           {mounted ? total : 0}
         </span>
-      </button>
+      </Link>
 
       {/* Hover dropdown — desktop only */}
       {open && hasItems && (
