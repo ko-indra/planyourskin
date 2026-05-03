@@ -78,6 +78,7 @@ export type SnapTransaction = {
   items: SnapItem[];
   customer?: SnapCustomer;
   finishUrl?: string;
+  notificationUrl?: string; // overrides dashboard webhook config per-transaction
   customField1?: string;
   customField2?: string;
   customField3?: string;
@@ -103,13 +104,19 @@ export async function createSnapTransaction(t: SnapTransaction): Promise<SnapRes
   if (t.customField2) body.custom_field2 = t.customField2;
   if (t.customField3) body.custom_field3 = t.customField3;
 
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Basic ${auth}`,
+  };
+  if (t.notificationUrl) {
+    // Per-transaction webhook override; bypasses dashboard Snap notification config.
+    headers["X-Override-Notification"] = t.notificationUrl;
+  }
+
   const res = await fetch(`${SNAP_BASE}/transactions`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Basic ${auth}`,
-    },
+    headers,
     body: JSON.stringify(body),
     cache: "no-store",
   });

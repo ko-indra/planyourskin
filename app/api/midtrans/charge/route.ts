@@ -66,7 +66,9 @@ export async function POST(req: Request) {
     }
     snapItems.push({ id: "SERVICE_FEE", name: "Biaya Layanan", price: SERVICE_FEE, quantity: 1 });
 
-    const finishUrl = `${getOrigin(req)}/checkout/success?order_id=${encodeURIComponent(orderId)}`;
+    const origin = getOrigin(req);
+    const finishUrl = `${origin}/checkout/success?order_id=${encodeURIComponent(orderId)}`;
+    const notificationUrl = `${origin}/api/midtrans/notification`;
 
     const result = await createSnapTransaction({
       order_id: orderId,
@@ -74,6 +76,7 @@ export async function POST(req: Request) {
       items: snapItems,
       customer,
       finishUrl,
+      notificationUrl,
       customField1: draft.gid, // shopify draft order GID, used by webhook
       customField2: draft.name, // e.g. "#D123" for display
     });
