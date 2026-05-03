@@ -132,6 +132,20 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
   return data.product;
 }
 
+export async function getProductsByIds(ids: string[]): Promise<ProductSummary[]> {
+  if (ids.length === 0) return [];
+  const query = /* GraphQL */ `
+    ${PRODUCT_FIELDS}
+    query Nodes($ids: [ID!]!) {
+      nodes(ids: $ids) {
+        ... on Product { ...ProductFields }
+      }
+    }
+  `;
+  const data = await shopifyFetch<{ nodes: Array<ProductSummary | null> }>(query, { ids }, false);
+  return data.nodes.filter((n): n is ProductSummary => n !== null);
+}
+
 export async function getCollectionProducts(handle: string, first = 24): Promise<ProductSummary[]> {
   const query = /* GraphQL */ `
     ${PRODUCT_FIELDS}

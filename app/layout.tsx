@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import WhatsAppFloat from "@/components/layout/WhatsAppFloat";
 import AccountModal from "@/components/account/AccountModal";
+import WishlistHydrator from "@/components/layout/WishlistHydrator";
 
 export const metadata: Metadata = {
   title: "PlanYourSkin",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <WhatsAppFloat />
         <AccountModal />
+        <WishlistHydrator />
       </body>
     </html>
   );

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { formatMoney, getProductByHandle } from "@/lib/shopify";
 import AddToCartButton from "@/components/product/AddToCartButton";
+import WishlistButton from "@/components/product/WishlistButton";
 
 export default async function ProductPage({ params }: { params: { handle: string } }) {
   const product = await getProductByHandle(params.handle);
@@ -52,8 +53,9 @@ export default async function ProductPage({ params }: { params: { handle: string
             className="prose prose-sm mt-6 max-w-none text-neutral-700"
             dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
           />
-          <div className="mt-8">
+          <div className="mt-8 space-y-5">
             <AddToCartButton product={product} />
+            <WishlistButton productId={product.id} />
           </div>
         </div>
       </div>
