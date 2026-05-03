@@ -54,6 +54,164 @@ export async function getCustomerWishlist(customerId: string): Promise<string[]>
   }
 }
 
+// ── Draft Orders ───────────────────────────────────────────────────────
+
+export type DraftOrderLineItem = {
+  variantId: string; // gid://shopify/ProductVariant/...
+  quantity: number;
+};
+
+export type DraftOrderAddress = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address1: string;
+  city: string;
+  province: string;
+  zip: string;
+  countryCode: string; // ISO, e.g. "ID"
+};
+
+export type CreateDraftOrderInput = {
+  email: string;
+  phone: string;
+  lineItems: DraftOrderLineItem[];
+  shippingAddress: DraftOrderAddress;
+  shippingTitle: string; // e.g. "JNE REG"
+  shippingPrice: number; // IDR amount
+  serviceFee?: number; // adds custom line item
+  note?: string;
+  tags?: string[];
+  customAttributes?: Array<{ key: string; value: string }>;
+};
+
+// Normalize Indonesian phone to E.164 format (Shopify requirement).
+// Examples: "081234567890" -> "+6281234567890", "62812..." -> "+62812..."
+function normalizePhoneID(phone: string): string {
+  const trimmed = phone.trim();
+  if (trimmed.startsWith("+")) return trimmed;
+  const digits = trimmed.replace(/\D/g, "");
+  if (digits.startsWith("0")) return `+62${digits.slice(1)}`;
+  if (digits.startsWith("62")) return `+${digits}`;
+  if (digits.length === 0) return "";
+  return `+62${digits}`;
+}
+
+export async function createDraftOrder(
+  input: CreateDraftOrderInput
+): Promise<{ id: string; name: string; gid: string }> {
+  const mutation = /* GraphQL */ `
+    mutation DraftOrderCreate($input: DraftOrderInput!) {
+      draftOrderCreate(input: $input) {
+        draftOrder { id name }
+        userErrors { field message }
+      }
+    }
+  `;
+
+  const lineItems: Array<Record<string, unknown>> = input.lineItems.map((li) => ({
+    variantId: li.variantId,
+    quantity: li.quantity,
+  }));
+
+  if (input.serviceFee && input.serviceFee > 0) {
+    lineItems.push({
+      title: "Biaya Layanan",
+      originalUnitPrice: input.serviceFee.toString(),
+      quantity: 1,
+      requiresShipping: false,
+      taxable: false,
+    });
+  }
+
+  const e164Phone = normalizePhoneID(input.phone);
+  const e164ShipPhone = normalizePhoneID(input.shippingAddress.phone);
+
+  const variables = {
+    input: {
+      email: input.email,
+      phone: e164Phone,
+      lineItems,
+      shippingAddress: {
+        firstName: input.shippingAddress.firstName,
+        lastName: input.shippingAddress.lastName,
+        phone: e164ShipPhone,
+        address1: input.shippingAddress.address1,
+        city: input.shippingAddress.city,
+        province: input.shippingAddress.province,
+        zip: input.shippingAddress.zip,
+        countryCode: input.shippingAddress.countryCode,
+      },
+      billingAddress: {
+        firstName: input.shippingAddress.firstName,
+        lastName: input.shippingAddress.lastName,
+        phone: e164ShipPhone,
+        address1: input.shippingAddress.address1,
+        city: input.shippingAddress.city,
+        province: input.shippingAddress.province,
+        zip: input.shippingAddress.zip,
+        countryCode: input.shippingAddress.countryCode,
+      },
+      shippingLine: {
+        title: input.shippingTitle,
+        price: input.shippingPrice.toString(),
+      },
+      taxExempt: true, // Prices on website are tax-inclusive; Midtrans charges that exact amount
+      note: input.note,
+      tags: input.tags,
+      customAttributes: input.customAttributes,
+    },
+  };
+
+  const data = await adminFetch<{
+    draftOrderCreate: {
+      draftOrder: { id: string; name: string } | null;
+      userErrors: Array<{ field: string[]; message: string }>;
+    };
+  }>(mutation, variables);
+
+  const dr = data.draftOrderCreate.draftOrder;
+  if (!dr) {
+    throw new Error(
+      `draftOrderCreate: ${data.draftOrderCreate.userErrors.map((e) => e.message).join("; ")}`
+    );
+  }
+  const numericId = dr.id.split("/").pop() ?? dr.id;
+  return { id: numericId, name: dr.name, gid: dr.id };
+}
+
+export async function completeDraftOrder(
+  draftOrderGid: string
+): Promise<{ orderId: string; orderName: string }> {
+  const mutation = /* GraphQL */ `
+    mutation DraftOrderComplete($id: ID!) {
+      draftOrderComplete(id: $id, paymentPending: false) {
+        draftOrder {
+          order { id name }
+        }
+        userErrors { field message }
+      }
+    }
+  `;
+
+  const data = await adminFetch<{
+    draftOrderComplete: {
+      draftOrder: { order: { id: string; name: string } | null } | null;
+      userErrors: Array<{ field: string[]; message: string }>;
+    };
+  }>(mutation, { id: draftOrderGid });
+
+  const order = data.draftOrderComplete.draftOrder?.order;
+  if (!order) {
+    throw new Error(
+      `draftOrderComplete: ${data.draftOrderComplete.userErrors.map((e) => e.message).join("; ")}`
+    );
+  }
+  return { orderId: order.id, orderName: order.name };
+}
+
+// ── Wishlist (existing) ────────────────────────────────────────────────
+
 export async function setCustomerWishlist(customerId: string, productIds: string[]): Promise<void> {
   const mutation = /* GraphQL */ `
     mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {

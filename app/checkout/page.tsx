@@ -137,24 +137,44 @@ export default function CheckoutPage() {
     setError(null);
     try {
       const [firstName, ...rest] = values.fullName.trim().split(/\s+/);
-      const lastName = rest.join(" ");
+      const lastName = rest.join(" ") || firstName;
+
+      const provinceName =
+        provinces.find((p) => String(p.id) === values.provinceId)?.name ?? "";
+      const cityName = cities.find((c) => String(c.id) === values.cityId)?.name ?? "";
+      const districtName =
+        districts.find((d) => String(d.id) === values.districtId)?.name ?? "";
+
+      const shippingTitle = `${selectedShipping.code.toUpperCase()} ${selectedShipping.service}`;
 
       const res = await fetch("/api/midtrans/charge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: lines.map((l) => ({
-            id: l.variantId,
+            variantId: l.variantId,
+            id: l.variantId.split("/").pop()?.slice(0, 50) ?? l.variantId,
             name: l.title,
             price: Math.round(l.priceAmount),
             quantity: l.quantity,
           })),
           shipping,
+          shippingTitle,
           customer: {
             first_name: firstName,
             last_name: lastName,
             email: values.email,
             phone: values.phone,
+          },
+          shippingAddress: {
+            firstName,
+            lastName,
+            phone: values.phone,
+            address1: `${values.address}, Kec. ${districtName}, ${cityName}`,
+            city: cityName,
+            province: provinceName,
+            zip: values.postalCode,
+            countryCode: "ID",
           },
         }),
       });
