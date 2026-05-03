@@ -1,0 +1,467 @@
+{
+  "title": "Ingredient Library",
+  "items": [
+    {
+      "name": "1,2-HEXANEDIOL",
+      "why": "A gentle, multi-functional preservative booster and humectant that is much safer and less irritating than parabens.",
+      "source": "Synthetic",
+      "what": "Helps preserve the formula and adds moisture to the skin."
+    },
+    {
+      "name": "Acrylates Copolymer",
+      "why": "To create the perfect texture that isn’t too runny or too thick.",
+      "source": "Synthetic",
+      "what": "Functions as a texture enhancer and film-former to keep the product stable on your skin."
+    },
+    {
+      "name": "Adenosine",
+      "why": "A powerhouse soothing and anti-aging ingredient derived from yeast.",
+      "source": "Naturally-Derived",
+      "what": "Energizes the skin’s surface to look smoother and younger while calming inflammation."
+    },
+    {
+      "name": "Allantoin",
+      "why": "The ultimate skin-soother found in the Comfrey plant.",
+      "source": "Synthetic",
+      "what": "Prevents irritation, heals the skin barrier, and keeps skin calm."
+    },
+    {
+      "name": "Aluminum Hydroxide",
+      "why": "Used to coat our Titanium Dioxide particles in the sunscreen.",
+      "source": "Synthetic",
+      "what": "Helps the sunscreen spread evenly and prevents it from reacting with other ingredients."
+    },
+    {
+      "name": "Arginine",
+      "why": "An amino acid that naturally exists in the body.",
+      "source": "Natural",
+      "what": "Acts as a pH adjuster to ensure the formula is compatible with your skin, while offering antioxidant benefits."
+    },
+    {
+      "name": "Ascorbyl Glucoside",
+      "why": "A stable form of Vitamin C that brightens without the sting.",
+      "source": "Synthetic",
+      "what": "Fades dark spots and boosts radiance."
+    },
+    {
+      "name": "BHT",
+      "why": "A potent antioxidant used in tiny amounts to protect the product itself.",
+      "source": "Synthetic",
+      "what": "Prevents the ingredients from oxidizing (going bad/smelling rancid)."
+    },
+    {
+      "name": "Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine",
+      "why": "One of the most advanced broad-spectrum UV filters available today.",
+      "source": "Synthetic",
+      "what": "Absorbs both UVA and UVB rays to protect skin from aging and burning."
+    },
+    {
+      "name": "Butylene Glycol",
+      "why": "A texture enhancer that makes the product feel light, not sticky.",
+      "source": "Synthetic",
+      "what": "Helps ingredients dissolve and penetrate while adding hydration"
+    },
+    {
+      "name": "C12-20 Alkyl Glucoside & C14-22 Alcohols",
+      "why": "A gentle emulsifying pair that mimics the skin’s lipid structure.",
+      "source": "Naturally-Derived",
+      "what": "Mixes oil and water ingredients together to create a smooth cream."
+    },
+    {
+      "name": "Calcium Gluconate",
+      "why": "A mineral supplement for the skin.",
+      "source": "Synthetic",
+      "what": "Helps soothe the skin and maintain barrier function."
+    },
+    {
+      "name": "Caprylic/Capric Triglyceride",
+      "why": "A silky oil derived from coconut that never feels greasy.",
+      "source": "Naturally-Derived",
+      "what": "Moisturizes and replenishes the skin surface."
+    },
+    {
+      "name": "Caprylyl Glycol",
+      "why": "A humectant that doubles as a preservative booster.",
+      "source": "Synthetic",
+      "what": "Softens the skin and keeps bacteria out of the jar."
+    },
+    {
+      "name": "Carbomer",
+      "why": "The ingredient responsible for the satisfying “gel” texture.",
+      "source": "Synthetic",
+      "what": "Thickens water-based formulas into a gel that holds moisture."
+    },
+    {
+      "name": "Ceramide NP",
+      "why": "The essential building block of a healthy skin barrier.",
+      "source": "Naturally-Derived",
+      "what": "Rebuilds the “mortar” between skin cells to lock in hydration."
+    },
+    {
+      "name": "Cetearyl Alcohol",
+      "why": "A “good” fatty alcohol (not the drying kind!) that softens skin.",
+      "source": "Naturally-Derived",
+      "what": "Gives creams their white, fluffy consistency and moisturizes."
+    },
+    {
+      "name": "Cetyl PEG/PPG-10/1 Dimethicone",
+      "why": "A silicone-based emulsifier.",
+      "source": "Synthetic",
+      "what": "Helps water mix with silicones for a silky, spreadable texture."
+    },
+    {
+      "name": "Choleth-24",
+      "why": "An emulsifier specifically used for our Ceramide complex.",
+      "source": "Synthetic",
+      "what": "Helps ceramides dissolve in water so they can absorb into your skin."
+    },
+    {
+      "name": "Cyanocobalamin",
+      "why": "The vitamin that gives our cleansing serum its natural pink color.",
+      "source": "Synthetic",
+      "what": "Soothes sensitive skin and supports skin health."
+    },
+    {
+      "name": "Cyclohexasiloxane & Cyclopentasiloxane",
+      "why": "Lightweight, volatile silicones that evaporate after application.",
+      "source": "Synthetic",
+      "what": "Allows the product to spread easily and then “set” to a velvet finish."
+    },
+    {
+      "name": "Dibutyl Adipate",
+      "why": "A clear, oil-like solvent.",
+      "source": "Synthetic",
+      "what": "Helps dissolve UV filters so the sunscreen is smooth, not gritty."
+    },
+    {
+      "name": "Diethylamino Hydroxybenzoyl Hexyl Benzoate",
+      "why": "A superior photostable chemical sunscreen filter.",
+      "source": "Synthetic",
+      "what": "Provides high protection specifically against UVA rays (aging rays)."
+    },
+    {
+      "name": "Dimethyl Isosorbide",
+      "why": "A smart solvent that boosts penetration.",
+      "source": "Synthetic",
+      "what": "Helps ingredients like HPR penetrate deeper into the skin without irritation."
+    },
+    {
+      "name": "Diphenylsiloxy Phenyl Trimethicone",
+      "why": "A premium silicone emollient.",
+      "source": "Synthetic",
+      "what": "Provides a long-lasting, glossy (but not oily) feel to the skin."
+    },
+    {
+      "name": "Dipotassium Glycyrrhizate",
+      "why": "An active compound from Licorice that is amazing for redness.",
+      "source": "Naturally-Derived",
+      "what": "Gives creams their white, fluffy consistency and moisturizes."
+    },
+    {
+      "name": "Dipropylene Glycol",
+      "why": "",
+      "source": "Naturally-Derived",
+      "what": "Gives creams their white, fluffy consistency and moisturizes."
+    },
+    {
+      "name": "Disodium EDTA",
+      "why": "Chelating agents that keep the formula “clean”.",
+      "source": "Naturally-Derived",
+      "what": "Gives creams their white, fluffy consistency and moisturizes."
+    },
+    {
+      "name": "Ethylhexyl Methoxycinnamate",
+      "why": "A classic UVB filter.",
+      "source": "Synthetic",
+      "what": "Protects the skin from UVB rays (burning rays)"
+    },
+    {
+      "name": "Ethylhexyl Palmitate",
+      "why": "A texture enhancer derived from palm oil.",
+      "source": "Naturally-Derived",
+      "what": "Boosts the SPF capability of other sunscreen ingredients."
+    },
+    {
+      "name": "Ethylhexyl Salicylate",
+      "why": "A liquid UVB filter.",
+      "source": "Synthetic",
+      "what": "Protects the skin from UVB rays (burning rays)"
+    },
+    {
+      "name": "Ethylhexylglycerin",
+      "why": "A skin-softening preservative booster",
+      "source": "Synthetic",
+      "what": "Keeps the formula safe from bacteria while conditioning the skin."
+    },
+    {
+      "name": "Glycerin",
+      "why": "The gold standard of hydration.",
+      "source": "Naturally-Derived",
+      "what": "Draws moisture into the skin to keep it plump."
+    },
+    {
+      "name": "Glyceryl Glucoside",
+      "why": "A next-gen hydrator that targets Aquaporins (water channels).",
+      "source": "Naturally-Derived",
+      "what": "Distributes moisture to deeper layers of the skin."
+    },
+    {
+      "name": "Glycine Soja (Soybean) Oil",
+      "why": "An antioxidant-rich plant oil",
+      "source": "Natural",
+      "what": "Smoothes skin and protects it from environmental damage."
+    },
+    {
+      "name": "Helianthus Annuus (Sunflower) Seed Oil",
+      "why": "A non-comedogenic oil rich in Linoleic Acid.",
+      "source": "Natural",
+      "what": "Repairs the barrier and breaks down makeup in cleansers."
+    },
+    {
+      "name": "Hydrogenated Lecithin",
+      "why": "An emulsifier with a structure similar to skin cells.",
+      "source": "Naturally-Derived",
+      "what": "Repairs the barrier and helps actives absorb better."
+    },
+    {
+      "name": "Hydroxyacetophenone",
+      "why": "An antioxidant that also stabilizes the formula.",
+      "source": "Synthetic",
+      "what": "Soothes skin and boosts the effectiveness of preservatives."
+    },
+    {
+      "name": "Hydroxypinacolone Retinoate",
+      "why": "The “Greenflag” Retinoid",
+      "source": "Synthetic",
+      "what": "Anti-aging and anti-acne without the irritation of traditional retinol."
+    },
+    {
+      "name": "Isododecane & Isohexadecane",
+      "why": "Ultra-lightweight solvents.",
+      "source": "Synthetic",
+      "what": "Makes heavy formulas feel weightless and matte."
+    },
+    {
+      "name": "Magnesium Chloride",
+      "why": "A mineral salt.",
+      "source": "Synthetic",
+      "what": "Helps improve skin barrier recovery."
+    },
+    {
+      "name": "Niacinamide",
+      "why": "The multitasking superstar.",
+      "source": "Synthetic",
+      "what": "Brightens, controls oil, strengthens barrier, and soothes."
+    },
+    {
+      "name": "Palmitoyl Terapeptide-7",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Palmitoyl Tripeptide-1",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Palmitoyl Tripeptide-5",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Panthenol",
+      "why": "The soothing healer.",
+      "source": "Synthetic",
+      "what": "Calms redness and heals the skin barrier."
+    },
+    {
+      "name": "Pentaerythrityl Tetraethylhexanoate",
+      "why": "A high-performance emollient.",
+      "source": "Synthetic",
+      "what": "Gives a cushiony, luxurious feel to the serum."
+    },
+    {
+      "name": "Pentylene Glycol",
+      "why": "A moisture-binding solvent.",
+      "source": "Synthetic",
+      "what": "Hydrates and protects the formula from bacteria."
+    },
+    {
+      "name": "Phenoxyethanol",
+      "why": "A gentle, globally approved preservative.",
+      "source": "Synthetic",
+      "what": "Keeps the product safe from dangerous bacteria and mold."
+    },
+    {
+      "name": "Polyglyceryl-10 Behenate/Eicosadioate",
+      "why": "A plant-based emulsifier.",
+      "source": "Naturally-Derived",
+      "what": "Stabilizes the oil-to-milk transformation in our cleanser."
+    },
+    {
+      "name": "Polymethylsilsesquioxane",
+      "why": "Spherical powder particles.",
+      "source": "Synthetic",
+      "what": "Provides a “soft-focus” effect to blur pores and creates a non-sticky finish."
+    },
+    {
+      "name": "Polysilicone-15",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Polysilicone-20",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Polysilicone-80",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Propanediol",
+      "why": "A natural alternative to propylene glycol.",
+      "source": "Naturally-Derived",
+      "what": "Hydrates skin and improves ingredient absorption."
+    },
+    {
+      "name": "Pyridoxine HCl",
+      "why": "A vitamin essential for skin balance.",
+      "source": "Synthetic",
+      "what": "Helps regulate sebum and maintain healthy skin."
+    },
+    {
+      "name": "Retinol",
+      "why": "The gold standard of anti-aging.",
+      "source": "Synthetic",
+      "what": "Increases cell turnover to treat wrinkles and acne."
+    },
+    {
+      "name": "Silica",
+      "why": "A natural mineral powder.",
+      "source": "Mineral",
+      "what": "Absorbs excess oil and prevents sunscreen from feeling greasy."
+    },
+    {
+      "name": "Sodium Acrylate/Sodium Acryloyldimethyl Taurate Copolymer",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Sodium Chloride",
+      "why": "",
+      "source": "Natural",
+      "what": "Used to thicken and stabilize the texture of water-in-oil emulsions."
+    },
+    {
+      "name": "Sodium Citrate",
+      "why": "",
+      "source": "Natural",
+      "what": ""
+    },
+    {
+      "name": "Sodium Hyaluronate",
+      "why": "The salt form of Hyaluronic Acid.",
+      "source": "Naturally-Derived",
+      "what": "Draws massive amounts of water into the skin."
+    },
+    {
+      "name": "Sodium Phytate",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Sodium Stearoyl Glutamate",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Sorbitan Isostearate",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Sorbitan Oleate",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Squalane",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Stearic Acid",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Sucrose Palmitate",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Titanium Dioxide",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Tocopherol",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Trehalose",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Tremella Fuciformis (Mushroom) Extract",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Tromethamine",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Water",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Xanthan Gum",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    },
+    {
+      "name": "Yeast Extract",
+      "why": "",
+      "source": "Synthetic",
+      "what": ""
+    }
+  ]
+}
