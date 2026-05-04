@@ -47,7 +47,7 @@ export default function HeroCarousel() {
 
   return (
     <section className="relative">
-      <div className="relative aspect-[1600/583] w-full overflow-hidden bg-neutral-100">
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-neutral-100 md:aspect-[1600/583]">
         {SLIDES.map((s, i) => (
           <div
             key={i}
