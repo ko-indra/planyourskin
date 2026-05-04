@@ -1,14 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useAccount } from "@/lib/account-store";
 
 type NavItem = { label: string; href: string; children?: { label: string; href: string }[] };
 
 export default function MobileNav({ items }: { items: NavItem[] }) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
-  const openAccount = useAccount((s) => s.open);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -110,15 +108,6 @@ export default function MobileNav({ items }: { items: NavItem[] }) {
                   </li>
                 );
               })}
-              <li>
-                <button
-                  type="button"
-                  onClick={() => { setOpen(false); openAccount("login"); }}
-                  className="block w-full px-5 py-4 text-left text-[13px] font-medium tracking-wide text-[#222529] hover:text-brand"
-                >
-                  MY ACCOUNT
-                </button>
-              </li>
             </ul>
           </aside>
         </>
