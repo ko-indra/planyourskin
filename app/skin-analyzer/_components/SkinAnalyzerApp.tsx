@@ -31,7 +31,12 @@ function SharedDefs() {
 
 export default function SkinAnalyzerApp() {
   const { result, setResult, clear } = useSkinAnalyzer();
-  const [phase, setPhase] = useState<Phase>(result ? "result" : "welcome");
+  // Always start at welcome — entering the route via the header CTA should
+  // never skip past the intro just because a previous session is cached.
+  // The cached `result` is still used inside the current session (so the
+  // result screen can re-render after navigating away and back via in-app
+  // links) but it does not auto-open on mount.
+  const [phase, setPhase] = useState<Phase>("welcome");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [cameraFailReason, setCameraFailReason] = useState<string | null>(null);
