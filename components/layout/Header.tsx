@@ -7,7 +7,7 @@ import AccountIconButton from "./AccountIconButton";
 type NavItem = { label: string; href: string; children?: { label: string; href: string }[] };
 
 const NAV: NavItem[] = [
-  { label: "ABOUT US", href: "/about-us" },
+  { label: "OUR STORY", href: "/about-us" },
   { label: "PRODUCTS", href: "/shop" },
   { label: "SEASONAL PROMO", href: "/product-category/sale" },
   { label: "SKIN ANALYZER", href: "/skin-analyzer" },
