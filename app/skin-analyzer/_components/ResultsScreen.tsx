@@ -1,8 +1,17 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import type { SkinAnalysis } from "@/lib/gemini";
-import type { ProductSuggestion } from "@/lib/product-suggester";
+import type { ProductSuggestion, ProductId } from "@/lib/product-suggester";
+import type { ProductWithFirstVariant } from "@/lib/shopify";
+import { useCart, type CartLine } from "@/lib/cart-store";
 import { PRODUCT_HANDLES } from "../_lib/product-registry";
+
+const WEIGHT_TO_GRAMS = {
+  GRAMS: 1,
+  KILOGRAMS: 1000,
+  OUNCES: 28.3495,
+  POUNDS: 453.592,
+} as const;
 
 type Props = {
   analysis: SkinAnalysis;
@@ -84,6 +93,9 @@ export default function ResultsScreen({ analysis, imageDataUrl, onRetake }: Prop
   const [healthScore, setHealthScore] = useState(0);
   const [detailOpen, setDetailOpen] = useState(false);
   const [products, setProducts] = useState<ProductSuggestion[] | "loading" | "error">("loading");
+  const [shopifyProducts, setShopifyProducts] = useState<Record<string, ProductWithFirstVariant | null>>({});
+  const [addedId, setAddedId] = useState<string | null>(null);
+  const cartAdd = useCart((s) => s.add);
   const detailRef = useRef<HTMLDivElement>(null);
   const ringsRef = useRef<HTMLDivElement>(null);
   const metricsListRef = useRef<HTMLDivElement>(null);
@@ -127,10 +139,12 @@ export default function ResultsScreen({ analysis, imageDataUrl, onRetake }: Prop
     };
   }, [score]);
 
-  // Fetch product suggestions
+  // Fetch product suggestions, then fetch each Shopify product in parallel so
+  // the Add-to-Cart button has variantId/price/weight ready on first click.
   useEffect(() => {
     let cancelled = false;
     setProducts("loading");
+    setShopifyProducts({});
     fetch("/api/skin-analyzer/suggest-products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -141,8 +155,31 @@ export default function ResultsScreen({ analysis, imageDataUrl, onRetake }: Prop
         if (!r.ok || !d.ok) throw new Error(d.error || `HTTP ${r.status}`);
         return d.suggestions ?? [];
       })
-      .then((s) => {
-        if (!cancelled) setProducts(s);
+      .then(async (suggestions) => {
+        if (cancelled) return;
+        setProducts(suggestions);
+
+        // Fan out Shopify product fetches by handle in parallel
+        const entries = await Promise.all(
+          suggestions.map(async (s) => {
+            const handle = PRODUCT_HANDLES[s.productId];
+            if (!handle) return [s.productId, null] as const;
+            try {
+              const r = await fetch(
+                `/api/skin-analyzer/product?handle=${encodeURIComponent(handle)}`
+              );
+              if (!r.ok) return [s.productId, null] as const;
+              const d = (await r.json()) as { product: ProductWithFirstVariant | null };
+              return [s.productId, d.product] as const;
+            } catch {
+              return [s.productId, null] as const;
+            }
+          })
+        );
+        if (cancelled) return;
+        const map: Record<string, ProductWithFirstVariant | null> = {};
+        for (const [id, p] of entries) map[id] = p;
+        setShopifyProducts(map);
       })
       .catch(() => {
         if (!cancelled) setProducts("error");
@@ -151,6 +188,26 @@ export default function ResultsScreen({ analysis, imageDataUrl, onRetake }: Prop
       cancelled = true;
     };
   }, [analysis]);
+
+  const handleAddToCart = (productId: ProductId) => {
+    const p = shopifyProducts[productId];
+    const v = p?.firstVariant;
+    if (!p || !v) return;
+    const grams = Math.round(v.weight * WEIGHT_TO_GRAMS[v.weightUnit]);
+    const line: Omit<CartLine, "quantity"> = {
+      variantId: v.id,
+      productHandle: p.handle,
+      title: p.title,
+      variantTitle: v.title,
+      image: p.featuredImage?.url ?? null,
+      priceAmount: parseFloat(v.price.amount),
+      currencyCode: v.price.currencyCode,
+      weightGrams: grams,
+    };
+    cartAdd(line, 1);
+    setAddedId(productId);
+    setTimeout(() => setAddedId(null), 1500);
+  };
 
   const toggleDetail = () => {
     const next = !detailOpen;
@@ -385,6 +442,17 @@ export default function ResultsScreen({ analysis, imageDataUrl, onRetake }: Prop
                   const handle = PRODUCT_HANDLES[s.productId];
                   const url = handle ? `/product/${handle}` : "/shop";
                   const matchPct = clampPct(s.matchPercent);
+                  const shopifyProduct = shopifyProducts[s.productId];
+                  const variant = shopifyProduct?.firstVariant;
+                  const canAddToCart = !!shopifyProduct && !!variant && variant.availableForSale;
+                  const isAdded = addedId === s.productId;
+                  const cartLabel = isAdded
+                    ? "✓ Ditambahkan"
+                    : !shopifyProduct
+                    ? "+ Keranjang"
+                    : !canAddToCart
+                    ? "Habis"
+                    : "+ Keranjang";
                   return (
                     <div
                       key={`${s.productId}-${i}`}
@@ -404,15 +472,29 @@ export default function ResultsScreen({ analysis, imageDataUrl, onRetake }: Prop
                         </div>
                         <h4 className="product-card-name">{s.name}</h4>
                         <p className="product-card-reason">{s.reason}</p>
-                        <a
-                          className="product-card-cta"
-                          href={url}
-                        >
-                          <span>Lihat Produk</span>
-                          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                            <path d="M7 17L17 7M9 7h8v8" />
-                          </svg>
-                        </a>
+                        <div className="product-card-actions">
+                          <a className="product-card-cta" href={url}>
+                            <span>Lihat Produk</span>
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+                              <path d="M7 17L17 7M9 7h8v8" />
+                            </svg>
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => handleAddToCart(s.productId)}
+                            disabled={!canAddToCart || isAdded}
+                            className={`product-card-cart${isAdded ? " added" : ""}`}
+                          >
+                            {!isAdded && (
+                              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="9" cy="20" r="1.5" />
+                                <circle cx="18" cy="20" r="1.5" />
+                                <path d="M3 4h2l3.6 11h10.4L22 7H6" />
+                              </svg>
+                            )}
+                            <span>{cartLabel}</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
