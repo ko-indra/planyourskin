@@ -34,18 +34,7 @@ const NAV: NavItem[] = [
       { label: "Skincare Bundles", href: "/product-category/skincare-bundles" },
     ],
   },
-  {
-    label: "SHOP BY CONCERN",
-    href: "/shop",
-    children: [
-      { label: "Acne Prone", href: "/product-category/acne-prone" },
-      { label: "Blemish", href: "/product-category/blemish" },
-      { label: "PIH", href: "/product-category/pih" },
-      { label: "PIE", href: "/product-category/pie" },
-      { label: "Large Pores", href: "/product-category/large-pores" },
-      { label: "Sensitive Skin", href: "/product-category/sensitive-skin" },
-    ],
-  },
+  { label: "SKIN ANALYZER", href: "/skin-analyzer" },
   { label: "ABOUT US", href: "/about-us" },
 ];
 

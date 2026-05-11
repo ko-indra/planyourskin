@@ -201,6 +201,51 @@ export async function getCollectionProducts(handle: string, first = 24): Promise
   return data.collection?.products.edges.map((e) => e.node) ?? [];
 }
 
+// Like getCollectionProducts but also returns each product's first variant
+// (id, price, weight, etc.) so callers can build CartLine items in one round-trip.
+// Used by /api/skin-analyzer/products to render Add-to-Cart on result cards.
+export async function getCollectionProductsWithVariant(
+  handle: string,
+  first = 3
+): Promise<ProductWithFirstVariant[]> {
+  const query = /* GraphQL */ `
+    ${PRODUCT_FIELDS}
+    query CollectionWithVariant($handle: String!, $first: Int!) {
+      collection(handle: $handle) {
+        products(first: $first) {
+          edges {
+            node {
+              ...ProductFields
+              variants(first: 1) {
+                edges {
+                  node {
+                    id
+                    title
+                    availableForSale
+                    price { amount currencyCode }
+                    weight
+                    weightUnit
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+  type Node = ProductSummary & {
+    variants: { edges: Array<{ node: ProductFirstVariant }> };
+  };
+  const data = await shopifyFetch<{
+    collection: { products: { edges: Array<{ node: Node }> } } | null;
+  }>(query, { handle, first });
+  return (data.collection?.products.edges ?? []).map((e) => ({
+    ...e.node,
+    firstVariant: e.node.variants.edges[0]?.node ?? null,
+  }));
+}
+
 export function formatMoney(money: Money): string {
   const n = parseFloat(money.amount);
   if (money.currencyCode === "IDR") {
