@@ -7,35 +7,11 @@ import AccountIconButton from "./AccountIconButton";
 type NavItem = { label: string; href: string; children?: { label: string; href: string }[] };
 
 const NAV: NavItem[] = [
-  { label: "BEST SELLER", href: "/product-category/best-seller" },
-  {
-    label: "SKINCARE",
-    href: "/shop",
-    children: [
-      { label: "Shop All", href: "/shop" },
-      { label: "Cleanser", href: "/product-category/cleansing-serum" },
-      { label: "Serum", href: "/product-category/serums" },
-      { label: "Moisturizer", href: "/product-category/moisturizer" },
-      { label: "Sunscreen", href: "/product-category/sunscreen" },
-      { label: "All At Once Water Cream", href: "/product/all-at-once-water-cream" },
-      { label: "All At Once Gel Moisturizer", href: "/product/all-at-once-gel-moisturizer" },
-      { label: "All Night HPR Retinoate Repair Serum", href: "/product/all-night-hpr-retinoate-repair-serum" },
-      { label: "New Arrivals", href: "/product-category/new-arrivals" },
-      { label: "SPECIAL OFFER", href: "/product-category/sale" },
-    ],
-  },
-  {
-    label: "BUNDLE & SAVE",
-    href: "/product-category/bundles",
-    children: [
-      { label: "Shop All Bundles", href: "/product-category/bundles" },
-      { label: "New Holiday Kits", href: "/product-category/holiday-kits" },
-      { label: "Double Cleansing Builder", href: "/product-category/double-cleansing" },
-      { label: "Skincare Bundles", href: "/product-category/skincare-bundles" },
-    ],
-  },
-  { label: "SKIN ANALYZER", href: "/skin-analyzer" },
   { label: "ABOUT US", href: "/about-us" },
+  { label: "PRODUCTS", href: "/shop" },
+  { label: "SEASONAL PROMO", href: "/product-category/sale" },
+  { label: "SKIN ANALYZER", href: "/skin-analyzer" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 export default function Header() {
