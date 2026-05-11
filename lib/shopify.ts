@@ -153,6 +153,41 @@ export type ProductWithFirstVariant = ProductSummary & {
   firstVariant: ProductFirstVariant | null;
 };
 
+// Like getProductByHandle but lean: returns just the summary fields + the
+// first variant — enough to render a product card with Add-to-Cart in one
+// round-trip. Used by /api/skin-analyzer/product.
+export async function getProductByHandleWithVariant(
+  handle: string
+): Promise<ProductWithFirstVariant | null> {
+  const query = /* GraphQL */ `
+    ${PRODUCT_FIELDS}
+    query ProductWithVariant($handle: String!) {
+      product(handle: $handle) {
+        ...ProductFields
+        variants(first: 1) {
+          edges {
+            node {
+              id
+              title
+              availableForSale
+              price { amount currencyCode }
+              weight
+              weightUnit
+            }
+          }
+        }
+      }
+    }
+  `;
+  type Node = ProductSummary & {
+    variants: { edges: Array<{ node: ProductFirstVariant }> };
+  };
+  const data = await shopifyFetch<{ product: Node | null }>(query, { handle }, false);
+  const p = data.product;
+  if (!p) return null;
+  return { ...p, firstVariant: p.variants.edges[0]?.node ?? null };
+}
+
 export async function getProductsByIds(ids: string[]): Promise<ProductWithFirstVariant[]> {
   if (ids.length === 0) return [];
   const query = /* GraphQL */ `

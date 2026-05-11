@@ -1,14 +1,33 @@
 "use client";
 import { useState } from "react";
+import "../skin-analyzer.css";
 import type { SkinAnalysis } from "@/lib/gemini";
 import { useSkinAnalyzer } from "../_lib/store";
 import WelcomeScreen from "./WelcomeScreen";
 import CameraScreen from "./CameraScreen";
-import AnalyzingOverlay from "./AnalyzingOverlay";
-import ResultModal from "./ResultModal";
+import ResultsScreen from "./ResultsScreen";
 import UploadFallback from "./UploadFallback";
 
-type Phase = "welcome" | "camera" | "upload" | "analyzing" | "result" | "error";
+type Phase = "welcome" | "camera" | "upload" | "result" | "error";
+
+// Shared SVG defs reused by score rings across screens
+function SharedDefs() {
+  return (
+    <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+      <defs>
+        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#A88AE0" />
+          <stop offset="50%" stopColor="#7C5DD3" />
+          <stop offset="100%" stopColor="#5A3BAB" />
+        </linearGradient>
+        <linearGradient id="healthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#F7A8C0" />
+          <stop offset="100%" stopColor="#7C5DD3" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
 
 export default function SkinAnalyzerApp() {
   const { result, setResult, clear } = useSkinAnalyzer();
@@ -29,15 +48,13 @@ export default function SkinAnalyzerApp() {
     setPhase("upload");
   };
 
-  const submitImage = async (dataUrl: string) => {
-    setImageDataUrl(dataUrl);
-    setPhase("analyzing");
-    setErrorMsg(null);
+  const submitImage = async (cleanDataUrl: string, displayDataUrl: string) => {
+    setImageDataUrl(displayDataUrl);
     try {
       const res = await fetch("/api/skin-analyzer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: dataUrl }),
+        body: JSON.stringify({ image: cleanDataUrl }),
       });
       const json = (await res.json()) as { ok?: boolean; analysis?: SkinAnalysis; error?: string };
       if (!res.ok || !json.ok || !json.analysis) {
@@ -59,50 +76,61 @@ export default function SkinAnalyzerApp() {
   };
 
   return (
-    <>
-      {phase === "welcome" && <WelcomeScreen onStart={handleStart} />}
+    <div className="sa-root">
+      <SharedDefs />
+      <div className="app-grain" aria-hidden="true" />
 
-      {phase === "camera" && (
-        <CameraScreen onCapture={submitImage} onCameraError={handleCameraError} />
-      )}
+      <div className="app-container">
+        {phase === "welcome" && <WelcomeScreen onStart={handleStart} />}
 
-      {phase === "upload" && (
-        <UploadFallback
-          reason={cameraFailReason ?? undefined}
-          onImage={submitImage}
-        />
-      )}
+        {phase === "camera" && (
+          <CameraScreen
+            onCapture={submitImage}
+            onCameraError={handleCameraError}
+          />
+        )}
 
-      {phase === "analyzing" && <AnalyzingOverlay />}
+        {phase === "upload" && (
+          <UploadFallback
+            reason={cameraFailReason ?? undefined}
+            onImage={(dataUrl) => submitImage(dataUrl, dataUrl)}
+          />
+        )}
 
-      {phase === "result" && result && (
-        <ResultModal
-          analysis={result}
-          imageDataUrl={imageDataUrl}
-          onRetake={handleRetake}
-        />
-      )}
+        {phase === "result" && result && (
+          <ResultsScreen
+            analysis={result}
+            imageDataUrl={imageDataUrl}
+            onRetake={handleRetake}
+          />
+        )}
 
-      {phase === "error" && (
-        <div className="mx-auto max-w-md text-center">
-          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-3xl">
-            ⚠️
-          </div>
-          <h2 className="text-[20px] font-semibold text-[#222529]">Gagal Menganalisis</h2>
-          <p className="mt-2 text-[14px] text-neutral-600">
-            {errorMsg ?? "Terjadi kesalahan. Silakan coba lagi."}
-          </p>
-          <div className="mt-6 flex justify-center gap-3">
+        {phase === "error" && (
+          <section className="screen welcome-screen">
+            <header className="brand-pill">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/skin-analyzer/assets/logo-plan-your-skin.png"
+                alt="Plan Your Skin"
+                className="brand-logo-img"
+              />
+            </header>
+            <div className="welcome-hero">
+              <h1 className="hero-headline">
+                <em>Gagal</em> menganalisis.
+              </h1>
+              <p className="hero-sub">{errorMsg ?? "Terjadi kesalahan. Silakan coba lagi."}</p>
+            </div>
             <button
               type="button"
               onClick={() => setPhase("welcome")}
-              className="inline-flex items-center justify-center rounded-full border border-[#222529] px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-[#222529] hover:bg-[#222529] hover:text-white"
+              className="btn-primary"
             >
-              Coba Lagi
+              <span>Coba Lagi</span>
             </button>
-          </div>
-        </div>
-      )}
-    </>
+          </section>
+        )}
+      </div>
+    </div>
   );
 }

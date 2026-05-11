@@ -17,7 +17,6 @@ async function fileToDownscaledDataUrl(file: File): Promise<string> {
       img.onerror = () => reject(new Error("Gagal memuat gambar"));
       img.src = fileUrl;
     });
-
     const scale = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
     const w = Math.round(img.naturalWidth * scale);
     const h = Math.round(img.naturalHeight * scale);
@@ -56,26 +55,33 @@ export default function UploadFallback({ reason, onImage }: Props) {
   };
 
   return (
-    <div className="mx-auto max-w-md text-center md:max-w-xl">
-      <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-brand-soft text-3xl">
-        📷
+    <section className="screen welcome-screen">
+      <header className="brand-pill">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/skin-analyzer/assets/logo-plan-your-skin.png"
+          alt="Plan Your Skin"
+          className="brand-logo-img"
+        />
+      </header>
+
+      <div className="welcome-hero">
+        <div className="welcome-orb" />
+        <h1 className="hero-headline">
+          Upload <em>foto</em> selfie kamu.
+        </h1>
+        <p className="hero-sub">
+          {reason ?? "Kamera tidak tersedia."} Pilih atau ambil foto wajah lurus
+          menghadap kamera dengan pencahayaan cukup.
+        </p>
       </div>
-      <h2 className="text-[22px] font-semibold text-[#222529]">
-        Upload Foto Selfie
-      </h2>
-      {reason && (
-        <p className="mt-2 text-[14px] text-neutral-600">{reason}</p>
-      )}
-      <p className="mt-2 text-[13px] leading-relaxed text-neutral-500">
-        Pilih atau ambil foto wajah lurus menghadap kamera dengan pencahayaan yang cukup.
-      </p>
 
       <input
         ref={inputRef}
         type="file"
         accept="image/*"
         capture="user"
-        className="hidden"
+        style={{ display: "none" }}
         onChange={(e) => {
           const f = e.target.files?.[0];
           if (f) handleFile(f);
@@ -86,14 +92,15 @@ export default function UploadFallback({ reason, onImage }: Props) {
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={busy}
-        className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#222529] px-10 py-4 text-[13px] font-semibold uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#3a3e44] disabled:opacity-50 md:w-auto"
+        className="btn-primary"
       >
-        {busy ? "Memproses…" : "Pilih Foto"}
+        <span>{busy ? "Memproses…" : "Pilih Foto"}</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+          <path d="M5 12h14M13 5l7 7-7 7" />
+        </svg>
       </button>
 
-      {error && (
-        <p className="mt-4 text-[13px] text-red-600">{error}</p>
-      )}
-    </div>
+      {error && <p className="disclaimer" style={{ color: "#E07AA0" }}>{error}</p>}
+    </section>
   );
 }

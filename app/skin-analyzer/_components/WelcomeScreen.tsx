@@ -4,58 +4,60 @@ type Props = { onStart: () => void };
 
 export default function WelcomeScreen({ onStart }: Props) {
   return (
-    <div className="mx-auto max-w-md text-center md:max-w-xl">
-      <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-brand-soft text-3xl">
-        ✨
+    <section className="screen welcome-screen">
+      <header className="brand-pill">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/skin-analyzer/assets/logo-plan-your-skin.png"
+          alt="Plan Your Skin"
+          className="brand-logo-img"
+        />
+      </header>
+
+      <div className="welcome-hero">
+        <div className="welcome-orb" />
+        <h1 className="hero-headline">
+          Rencana kulit <em>sehatmu</em> dimulai di sini.
+        </h1>
+        <p className="hero-sub">
+          Lakukan smart scanning sekarang untuk membaca profil kulitmu dan dapatkan
+          solusi perawatan yang tepat.
+        </p>
       </div>
-      <h1 className="text-[28px] font-semibold leading-tight text-[#222529] md:text-[36px]">
-        Skin Analyzer
-      </h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-neutral-600">
-        Analisis kondisi kulit wajahmu secara instan dengan teknologi AI dermatologi.
-        Dapatkan skor kulit, identifikasi masalah, dan rekomendasi produk yang sesuai.
-      </p>
 
-      <ul className="mt-8 grid gap-3 text-left md:grid-cols-3">
-        <Feature
-          icon="📸"
-          title="Foto cepat"
-          desc="Selfie langsung dari kamera, otomatis terambil saat posisi pas"
-        />
-        <Feature
-          icon="🤖"
-          title="AI profesional"
-          desc="Penilaian objektif berbasis machine learning dermatologi"
-        />
-        <Feature
-          icon="🛍️"
-          title="Rekomendasi produk"
-          desc="Hasil analisis langsung ke produk PlanYourSkin yang relevan"
-        />
-      </ul>
+      <div className="welcome-features">
+        <div className="feat">
+          <span className="feat-dot" />
+          <span>Real-Time Skin Mapping</span>
+        </div>
+        <div className="feat">
+          <span className="feat-dot" />
+          <span>468-Point Micro Detection</span>
+        </div>
+        <div className="feat">
+          <span className="feat-dot" />
+          <span>Auto-Capture Protocol</span>
+        </div>
+      </div>
 
-      <button
-        type="button"
-        onClick={onStart}
-        className="mt-10 inline-flex w-full items-center justify-center rounded-full bg-[#222529] px-10 py-4 text-[13px] font-semibold uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#3a3e44] md:w-auto"
-      >
-        Mulai Analisis Kulit
+      <button type="button" onClick={onStart} className="btn-primary">
+        <span>Mulai Skin Mapping</span>
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        >
+          <path d="M5 12h14M13 5l7 7-7 7" />
+        </svg>
       </button>
 
-      <p className="mt-6 text-[11px] leading-relaxed text-neutral-500">
-        Privasi: foto kamu hanya dikirim ke server analisis dan tidak disimpan.
-        Hasil dapat berbeda dari konsultasi dokter — bukan diagnosa medis.
+      <p className="disclaimer">
+        Kamera hanya aktif saat pemindaian. Privasi dan data wajah kamu 100% aman.
       </p>
-    </div>
-  );
-}
-
-function Feature({ icon, title, desc }: { icon: string; title: string; desc: string }) {
-  return (
-    <li className="rounded-lg border border-neutral-200 p-4">
-      <span className="text-2xl">{icon}</span>
-      <p className="mt-2 text-[14px] font-semibold text-[#222529]">{title}</p>
-      <p className="mt-1 text-[12px] leading-relaxed text-neutral-600">{desc}</p>
-    </li>
+    </section>
   );
 }
