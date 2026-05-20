@@ -51,7 +51,7 @@ export default function Footer() {
               <SocialIconLink href="https://instagram.com/planyourskin" label="Instagram" src="/assets/social/instagram.svg" />
               <SocialIconLink href="http://tiktok.com/@planyourskin" label="TikTok" src="/assets/social/tiktok.svg" />
               <MarketplaceLink href="https://shopee.co.id/planyourskin" label="Shopee" src="/assets/social/shopee.png" />
-              <MarketplaceLink href="https://www.tokopedia.com/planyourskin" label="Tokopedia" src="/assets/social/tokopedia.png" />
+              <MarketplaceLink href="https://tk.tokopedia.com/ZSxkVH2fX/" label="Tokopedia" src="/assets/social/tokopedia.png" />
               <a
                 href="http://tiktok.com/@planyourskin"
                 target="_blank"
