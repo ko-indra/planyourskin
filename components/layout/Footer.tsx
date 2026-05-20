@@ -49,19 +49,9 @@ export default function Footer() {
             <h3 className="mb-5 text-[14px] font-bold uppercase tracking-[0.1em]">How To Find Us</h3>
             <div className="flex items-center gap-5">
               <SocialIconLink href="https://instagram.com/planyourskin" label="Instagram" src="/assets/social/instagram.svg" />
-              <SocialIconLink href="http://tiktok.com/@planyourskin" label="TikTok" src="/assets/social/tiktok.svg" />
               <MarketplaceLink href="https://shopee.co.id/planyourskin" label="Shopee" src="/assets/social/shopee.png" />
               <MarketplaceLink href="https://tk.tokopedia.com/ZSxkVH2fX/" label="Tokopedia" src="/assets/social/tokopedia.png" />
-              <a
-                href="http://tiktok.com/@planyourskin"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="TikTok Shop"
-                className="inline-flex items-center gap-1.5 text-white transition-colors hover:text-brand"
-              >
-                <SocialSvg src="/assets/social/tiktok.svg" size={20} />
-                <span className="text-[13px] font-semibold tracking-tight">TikTok</span>
-              </a>
+              <SocialIconLink href="http://tiktok.com/@planyourskin" label="TikTok" src="/assets/social/tiktok.svg" />
             </div>
           </div>
 
