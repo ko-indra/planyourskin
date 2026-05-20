@@ -36,10 +36,20 @@ export default function ShopGrid({ products }: { products: ProductSummary[] }) {
   }, [products]);
 
   const [search, setSearch] = useState("");
-  const [pendingMin, setPendingMin] = useState(minPrice);
-  const [pendingMax, setPendingMax] = useState(maxPrice);
+  const [pendingMinStr, setPendingMinStr] = useState(String(minPrice));
+  const [pendingMaxStr, setPendingMaxStr] = useState(String(maxPrice));
   const [appliedMin, setAppliedMin] = useState(minPrice);
   const [appliedMax, setAppliedMax] = useState(maxPrice);
+
+  const pendingMin = Number(pendingMinStr) || 0;
+  const pendingMax = Number(pendingMaxStr) || 0;
+
+  // Strip any leading zeros (e.g. "0350000" -> "350000"), but keep a single "0"
+  const sanitizeDigits = (raw: string) => {
+    const digits = raw.replace(/[^0-9]/g, "");
+    const stripped = digits.replace(/^0+(?=\d)/, "");
+    return stripped;
+  };
   const [cats, setCats] = useState<string[]>([]);
   const [concerns, setConcerns] = useState<string[]>([]);
   const [sort, setSort] = useState("default");
@@ -112,19 +122,19 @@ export default function ShopGrid({ products }: { products: ProductSummary[] }) {
             </div>
             <div className="grid grid-cols-2 gap-2">
               <input
-                type="number"
-                value={pendingMin}
-                min={minPrice}
-                max={pendingMax}
-                onChange={(e) => setPendingMin(Number(e.target.value))}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={pendingMinStr}
+                onChange={(e) => setPendingMinStr(sanitizeDigits(e.target.value))}
                 className="w-full border border-neutral-300 px-2 py-1 text-[12px]"
               />
               <input
-                type="number"
-                value={pendingMax}
-                min={pendingMin}
-                max={maxPrice}
-                onChange={(e) => setPendingMax(Number(e.target.value))}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={pendingMaxStr}
+                onChange={(e) => setPendingMaxStr(sanitizeDigits(e.target.value))}
                 className="w-full border border-neutral-300 px-2 py-1 text-[12px]"
               />
             </div>
